@@ -144,7 +144,7 @@ class Solution:
             if prefix_sum >= remaining_sum:
                 valid_splits += 1
 
-            return valid_splits  # Return the total count of valid splits
+        return valid_splits  # Return the total count of valid splits
 
 
 # @lc code=end
