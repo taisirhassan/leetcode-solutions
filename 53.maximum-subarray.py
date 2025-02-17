@@ -79,12 +79,75 @@ class Solution:
         #         max_sum = max(max_sum, current_sum)
 
         # return max_sum
-        
+
         # Approach 2: Bruteforce Optimized
         # Time Complexity: O(n^2)
         # Space Complexity: O(1)
-        
-        
+        # n = len(nums)
+        # max_sum = float("-inf")
+        # # Outer loop: choose starting index of subarray
+        # for i in range(n):
+        #     current_sum = 0  # Initialize sum for this starting index
+        #     # Inner loop: extend the subarray ending index one element at a time
+        #     for j in range(i, n):
+        #         current_sum += nums[j]  # Add current element to the subarray sum
+        #         max_sum = max(max_sum, current_sum)  # Update max_sum if needed
+        # return max_sum
+
+        # Approach 3: Greedy Kadane's Algorithm
+        # Time Complexity: O(n)
+        # Space Complexity: O(1)
+        # Initialize current_sum and max_sum with the first element of the array.
+        # current_sum = max_sum = nums[0]
+
+        # # Iterate from the second element to the end of the array.
+        # for i in range(1, len(nums)):
+        #     # Either add the current element to the current_sum or start new subarray from current element.
+        #     current_sum = max(nums[i], current_sum + nums[i])
+        #     # Update max_sum if current_sum is greater.
+        #     max_sum = max(max_sum, current_sum)
+
+        # return max_sum
+
+        # Approach 4: Divide and Conquer
+        # Time Complexity: O(nlogn)
+        # Space Complexity: O(logn)
+        # Helper function for divide and conquer.
+        def helper(left: int, right: int) -> int:
+            # Base case: only one element.
+            if left == right:
+                return nums[left]
+
+            # Find the middle index.
+            mid = (left + right) // 2
+
+            # Recursively solve for the left and right halves.
+            left_sum = helper(left, mid)
+            right_sum = helper(mid + 1, right)
+
+            # Now, compute the maximum subarray sum that crosses the midpoint.
+            # Start with the left half.
+            cross_left_sum = float("-inf")
+            temp_sum = 0
+            for i in range(mid, left - 1, -1):
+                temp_sum += nums[i]
+                cross_left_sum = max(cross_left_sum, temp_sum)
+
+            # Now, compute the right half.
+            cross_right_sum = float("-inf")
+            temp_sum = 0
+            for i in range(mid + 1, right + 1):
+                temp_sum += nums[i]
+                cross_right_sum = max(cross_right_sum, temp_sum)
+
+            # The maximum sum for the cross segment.
+            cross_sum = cross_left_sum + cross_right_sum
+
+            # Return the maximum among the three possible cases.
+            return max(left_sum, right_sum, cross_sum)
+
+        # Call the helper function on the entire array.
+        return helper(0, len(nums) - 1)
 
 
 # @lc code=end
