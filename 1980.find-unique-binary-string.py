@@ -61,7 +61,7 @@
 class Solution:
     def findDifferentBinaryString(self, nums: List[str]) -> str:
         # Approach 1: Brute Force
-        # Time: O(n^2)
+        # Time: O(2^n * n)
         # Space: O(n)
         nums_set = set(nums)
         n = len(nums)
@@ -75,7 +75,7 @@ class Solution:
                 # otherwise return an empty string
                 return ""
 
-            addZero = generate("0" + curr)
+            addZero = generate(curr + "0")
             if addZero != "":
                 # early return if a valid string is found in this branch.
                 return addZero
