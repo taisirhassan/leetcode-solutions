@@ -90,7 +90,7 @@ class Solution:
         # Time Complexity: O(n)
         # Space Complexity: O(n)
         
-        if not preorder:
+        if not preorder or not inorder:
             return None
         
         # create the root from the first element in preorder
