@@ -67,7 +67,7 @@
 # @lc code=start
 class Solution:
     def punishmentNumber(self, n: int) -> int:
-        # Approach 1: Brute Force with string partitioning
+        # Approach 1: Brute Force Backtracking
         # Time Complexity: O(n^2 * 2^L) where L is the length of the string representation of i^2
         # Space Complexity: O(n) for the recursion stack
         # def can_partition_dfs(s: str, target: int) -> bool:

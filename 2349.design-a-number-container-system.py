@@ -70,14 +70,54 @@
 
 # @lc code=start
 class NumberContainers:
+  
+  # Approach 1: Simple Dictionary with Linear Search
+  # Time complexity: O(n)
+  # Space complexity: O(n)
 
     def __init__(self):
+      self.index_to_number = {} # dictionary to store index and number
+      self.num_to_indices = {} # dictionary to map a number to a min-heap of indices that contain this number
         
 
     def change(self, index: int, number: int) -> None:
+       # if the index already had a number, we don't immediately remove it from its old heap
+        # (lazy deletion will handle it during the find operation).
+        if index in self.index_to_number:
+            old_number = self.index_to_number[index]
+            # No need to remove from heap immediately; lazy deletion will check correctness later.
+        
+        # update the mapping of the index to the new number.
+        self.index_to_number[index] = number
+        
+        # if this number is not present in the dictionary, initialize a new heap for it.
+        if number not in self.num_to_indices:
+            self.num_to_indices[number] = []
+        # push the index to the heap of the number. 
+        heapq.heappush(self.num_to_indices[number], index)
         
 
     def find(self, number: int) -> int:
+      # indices = [idx for idx, num in self.index_to_number.items() if num == number] # indices of number in the dictionary 
+      # return min(indices) if indices else -1
+      
+      # if the number is not present in the dictionary, return -1.
+        if number not in self.num_to_indices:
+            return -1
+       
+       # retrieve the heap for the given number.
+        heap = self.num_to_indices[number]
+        
+        # remove the old indices from the heap. 
+        while heap and self.index_to_number.get(heap[0], None) != number:
+            heapq.heappop(heap)
+            
+         # If the heap becomes empty, no valid index exists.
+        if not heap:
+            return -1
+        
+        # The smallest valid index is at the top of the heap.
+        return heap[0]
         
 
 
