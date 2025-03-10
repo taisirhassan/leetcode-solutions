@@ -188,8 +188,6 @@ class Solution:
             vowels = set("aeiou")
             n = len(word)
 
-            from collections import Counter
-
             vowel_count = Counter()
             consonant_count = 0
             result = 0
