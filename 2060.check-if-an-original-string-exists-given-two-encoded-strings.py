@@ -5,6 +5,7 @@
 #
 
 # @lc code=start
+from collections import deque
 from functools import lru_cache
 import string
 from typing import List
@@ -110,78 +111,144 @@ class Solution:
         
         # return dp(0,0,0)
         
-        n1, n2 = len(s1), len(s2)
+        # n1, n2 = len(s1), len(s2)
         
-        @lru_cache(None)
-        def dfs(i: int, j:int, diff: int) -> bool:
-            # if both strings are consumed, match only if no pending wildcards
-            if i == n1 and j == n2:
-                return diff == 0
+        # @lru_cache(None)
+        # def dfs(i: int, j:int, diff: int) -> bool:
+        #     # if both strings are consumed, match only if no pending wildcards
+        #     if i == n1 and j == n2:
+        #         return diff == 0
             
-            # Case A: diff == 0, must either match letters or spawn wildcards
-            if diff == 0:
-                # Case A1: both are letters and match
-                if i < n1 and j < n2 and s1[i].isalpha() and s2[j].isalpha() and s1[i] == s2[j]:
-                    if s1[i] == s2[j] and dfs(i + 1, j + 1, 0): 
-                        return True
+        #     # Case A: diff == 0, must either match letters or spawn wildcards
+        #     if diff == 0:
+        #         # Case A1: both are letters and match
+        #         if i < n1 and j < n2 and s1[i].isalpha() and s2[j].isalpha() and s1[i] == s2[j]:
+        #             if s1[i] == s2[j] and dfs(i + 1, j + 1, 0): 
+        #                 return True
                 
-                # Case A2: spawn wildcards from s1 (digit block)
-                if i < n1 and s1[i].isdigit():
-                    val = 0
-                    for k in range(i, min(i +3, n1)):
-                        if not s1[k].isdigit():
-                            break
-                        val = val * 10 + int(s1[k])
-                        if dfs(k + 1, j, diff + val):
-                            return True
+        #         # Case A2: spawn wildcards from s1 (digit block)
+        #         if i < n1 and s1[i].isdigit():
+        #             val = 0
+        #             for k in range(i, min(i +3, n1)):
+        #                 if not s1[k].isdigit():
+        #                     break
+        #                 val = val * 10 + int(s1[k])
+        #                 if dfs(k + 1, j, diff + val):
+        #                     return True
                         
-                # Case A3: spawn wildcards from s2 (digit block)
-                if j < n2 and s2[j].isdigit():
-                    val = 0
-                    for k in range(j, min(j + 3, n2)):
-                        if not s2[k].isdigit():
-                            break
-                        val = val * 10 + int(s2[k])
-                        if dfs(i, k + 1, diff - val):
-                            return True
-                return False
+        #         # Case A3: spawn wildcards from s2 (digit block)
+        #         if j < n2 and s2[j].isdigit():
+        #             val = 0
+        #             for k in range(j, min(j + 3, n2)):
+        #                 if not s2[k].isdigit():
+        #                     break
+        #                 val = val * 10 + int(s2[k])
+        #                 if dfs(i, k + 1, diff - val):
+        #                     return True
+        #         return False
                         
-            # Case B: diff > 0, -> s1 has extra wildcards to consume into s2
-            if diff > 0:
-                # Case B1: consume from s2
-                if j < n2 and s2[j].isalpha():
-                    if dfs(i, j + 1, diff - 1):
-                        return True
-                # Case B2: spawn wildcards from s2 (digit block)
-                if j < n2 and s2[j].isdigit():  
-                    val = 0
-                    for k in range(j, min(j + 3, n2)):
-                        if not s2[k].isdigit():
-                            break
-                        val = val * 10 + int(s2[k])
-                        if dfs(i, k + 1, diff - val):
-                            return True
-                return False
+        #     # Case B: diff > 0, -> s1 has extra wildcards to consume into s2
+        #     if diff > 0:
+        #         # Case B1: consume from s2
+        #         if j < n2 and s2[j].isalpha():
+        #             if dfs(i, j + 1, diff - 1):
+        #                 return True
+        #         # Case B2: spawn wildcards from s2 (digit block)
+        #         if j < n2 and s2[j].isdigit():  
+        #             val = 0
+        #             for k in range(j, min(j + 3, n2)):
+        #                 if not s2[k].isdigit():
+        #                     break
+        #                 val = val * 10 + int(s2[k])
+        #                 if dfs(i, k + 1, diff - val):
+        #                     return True
+        #         return False
         
-            # Case C: diff < 0, -> s2 has extra wildcards to consume into s1    
-            if diff < 0:
-                # Case C1: consume from s1
-                if i < n1 and s1[i].isalpha():
-                    if dfs(i + 1, j, diff + 1):
-                        return True
-                # Case C2: spawn wildcards from s1 (digit block)
-                if i < n1 and s1[i].isdigit():
-                    val = 0
-                    for k in range(i, min(i + 3, n1)):
-                        if not s1[k].isdigit():
-                            break
-                        val = val * 10 + int(s1[k])
-                        if dfs(k + 1, j, diff + val):
-                            return True
-            return False
+        #     # Case C: diff < 0, -> s2 has extra wildcards to consume into s1    
+        #     if diff < 0:
+        #         # Case C1: consume from s1
+        #         if i < n1 and s1[i].isalpha():
+        #             if dfs(i + 1, j, diff + 1):
+        #                 return True
+        #         # Case C2: spawn wildcards from s1 (digit block)
+        #         if i < n1 and s1[i].isdigit():
+        #             val = 0
+        #             for k in range(i, min(i + 3, n1)):
+        #                 if not s1[k].isdigit():
+        #                     break
+        #                 val = val * 10 + int(s1[k])
+        #                 if dfs(k + 1, j, diff + val):
+        #                     return True
+        #     return False
         
-        # start with both strings empty and diff = 0
-        return dfs(0,0,0)
+        # # start with both strings empty and diff = 0
+        # return dfs(0,0,0)
+        
+        
+        # Approach 3: Breadth-First Search
+        # Time Complexity: O(n1 * n2 * 26^3) 
+        # Space Complexity: O(n1 * n2 * 26^3)
+        
+        n1, n2 = len(s1), len(s2)
+        start = (0, 0, 0)
+        q = deque([start])
+        seen = set([start])
+
+        while q:
+            i, j, diff = q.popleft()
+            # success?
+            if i == n1 and j == n2 and diff == 0:
+                return True
+
+            # a small helper to push new states
+            def push(ni, nj, nd):
+                state = (ni, nj, nd)
+                if state not in seen:
+                    seen.add(state)
+                    q.append(state)
+
+            # mirror the same three cases as in DFS:
+            if diff == 0:
+                # letter match
+                if i<n1 and j<n2 and s1[i].isalpha() and s2[j].isalpha() and s1[i]==s2[j]:
+                    push(i+1, j+1, 0)
+                # s1 digit-run
+                if i<n1 and s1[i].isdigit():
+                    val = 0
+                    for k in range(i, min(i+3, n1)):
+                        if not s1[k].isdigit(): break
+                        val = val*10 + int(s1[k]) 
+                        push(k+1, j, diff + val)
+                # s2 digit-run
+                if j<n2 and s2[j].isdigit():
+                    val = 0
+                    for k in range(j, min(j+3, n2)):
+                        if not s2[k].isdigit(): break
+                        val = val*10 + int(s2[k])
+                        push(i, k+1, diff - val)
+
+            elif diff > 0:
+                # consume from s2
+                if j<n2 and s2[j].isalpha():
+                    push(i, j+1, diff-1)
+                if j<n2 and s2[j].isdigit():
+                    val = 0
+                    for k in range(j, min(j+3, n2)):
+                        if not s2[k].isdigit(): break
+                        val = val*10 + int(s2[k])
+                        push(i, k+1, diff - val)
+
+            else:  # diff < 0, consume from s1
+                if i<n1 and s1[i].isalpha():
+                    push(i+1, j, diff+1)
+                if i<n1 and s1[i].isdigit():
+                    val = 0
+                    for k in range(i, min(i+3, n1)):
+                        if not s1[k].isdigit(): break
+                        val = val*10 + int(s1[k])
+                        push(k+1, j, diff + val)
+
+        return False
             
                 
         
